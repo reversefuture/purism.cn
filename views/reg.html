@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="form-horizontal">
+    <fieldset>
+        <legend>注册</legend>
+        <div class="control-group">
+            <label for="username" class="control-label">用户名</label>
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="username" name="username"/>
+                <p class="help-block" id="tips">你的账户名称，用于登录和提示</p>
+                <p class="help-block displayNONE" id="usrname-error">用户名不能为空</p>
+                <p class="help-block displayNONE" id="error-alert"></p>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="password" class="control-label">口令</label>
+            <div class="controls">
+                <input type="password" class="input-xlarge" id="password" name="password"/>
+                <p class="help-block displayNONE" id="pw-error">密码不能为空</p>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="password-repeat" class="control-label">重复输入口令</label>
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="password-repeat" name="password-repeat"/>
+                <p class="help-block displayNONE" id="pw-rp-error">两次密码需要一致</p>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-priamry" id="submit-button">注册</button>
+        </div>
+    </fieldset>
+
+</div>
+{% parent %}
+{% endblock %}
+{% block js %}
+{% parent %}
+<script type="text/javascript" src="js/reg.js"></script>
+
+{% endblock %}

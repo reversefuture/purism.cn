@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block css %}
+{% parent %}
+<link rel="stylesheet" href="css/index.css">
+{% endblock %}
+
+{% block content %}
+<div class="hero-unit">
+    <h1>{{index.title}}</h1>
+    <p>{{index.description}}</p>
+    <br/>
+    <br/>
+    {% if !user %}
+    <br/>
+    <br/>
+    <a href="/login" class="btn btn-primary btn-large">{{index.login}}</a>
+    <a href="/reg" class="btn btn-large">{{index.regNow}}</a>
+    {% else %}
+    <textarea name="text" id="textarea" cols="30" rows="10"></textarea>
+    <button id="postBlog" class="btn btn-large">{{index.submit}}</button>
+    <button id="clearBlog" class="btn btn-large">{{index.emptyInput}}</button>
+    {% endif %}
+    <div id="submitError" class="alert alert-error displayNONE myalert"></div>
+    <div id="submitSuccess" class="alert alert-success displayNONE"></div>
+</div>
+<div class="row content" id="content">
+    <div class="span4">
+        <h2> 烟雨江南说</h2>
+        <p>当欲望没有了枷锁，就没有了向前的路</p>
+        <p>只有转左，或者向右</p>
+        <p>左边是地狱，右边也是地狱</p>
+    </div>
+    <div class="span4">
+        <h2> 烟雨江南说</h2>
+        <p>记忆真是一种奇怪的东西，</p>
+        <p>有时候会涤荡所有的苦难，只留下温情，</p>
+        <p>有时候却磨灭掉曾有的欢乐，唯剩下苍白和丑陋</p>
+    </div>
+
+</div>
+<div id="scrollToFoot">滚动到底部然后加载内容</div>
+{% endblock %}
+
+{% block js %}
+{% parent %}
+<script type="text/javascript" src = "js/index.js"></script>
+{% endblock %}
