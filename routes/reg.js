@@ -30,7 +30,7 @@ router.post('/', function (req, res, next) {    //当路由捕捉到url为/reg�
         });
     }
     if (err) {  //如果报错，返回报错信息
-        console.log(err);
+        // console.log(err);
         return res.send({
             error: err
         });
