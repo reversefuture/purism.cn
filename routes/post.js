@@ -35,11 +35,11 @@ function BlogSubmit(user) {
 //存储文本内容
 BlogSubmit.prototype.save = function (callback) {
     var self = this;
-    console.log(self.user);
+    //console.log(self.user);
     db.con(function (connect) {
         connect.query("INSERT INTO text(user,text,ctime) VALUES (?,?,?)", [self.user, self.text, self.time], function (err, result) {
             if (err) {
-                console.log("INSERT text user:" + self.user + ", text:" + self.text + ", ctime: " + self.time + " error, the err information is " + err);
+                //console.log("INSERT text user:" + self.user + ", text:" + self.text + ", ctime: " + self.time + " error, the err information is " + err);
                 return callback(err);
             }
             callback(null, result);
@@ -51,7 +51,7 @@ router.post('/', function (req, res, next) {
     //如果不登录是不能发表的（这个是为了防止登录过期，但是页面还保持在登录时的情况）
     if (!req.session.user) {
         req.session.err = "请登录";        //因为这里，需要修改layout.jade
-        console.log('请登录');
+        //console.log('请登录');
         return res.redirect('/login');
     }
     //console.log(req.session.user);

@@ -79,7 +79,7 @@ internation.prototype.set = function (app) {
         //这个是示例，定义一个动态视图助手变量
 
         //如果有语言设置，则设置为对应的语言，否则，设置为中文；
-        //console.dir(req.session.language + '-------model lan');
+        ////console.dir(req.session.language + '-------model lan');
         res.locals = self.getPacks(req.session.language);
 
         /*if(req.session.isVisit) {
@@ -88,23 +88,23 @@ internation.prototype.set = function (app) {
         } else {
             req.session.isVisit = 1;
             // res.send("欢迎第一次来这里");
-            // console.dir(req.session);
+            // //console.dir(req.session);
         }
         if(!req.session.user) {
             // req.session.user = req.cookie.user;
-            console.log('in lan middle, no session.user');
+            //console.log('in lan middle, no session.user');
         }else{
-            console.dir(req.session.user);
+            //console.dir(req.session.user);
         }*/
 
         //下面两个因为要调用req和res，所以特殊设置
         res.locals.user = function () {
             if ('session' in req && 'user' in req.session){
-                console.dir(req.session.user);
+                //console.dir(req.session.user);
                 return req.session.user;
             }
             else{
-                console.log('in lan middle, no session.user');
+                // console.log('in lan middle, no session.user');
                 return null;
             }
 

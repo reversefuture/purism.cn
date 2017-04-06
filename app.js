@@ -21,7 +21,7 @@ var app = express();
 /*// middle ware test
 app.use(function( req, res, next) {
     res.locals.testUser = testUser(req, res);
-    console.log('!!!!!! middle ware test');
+    //console.log('!!!!!! middle ware test');
     next();
 });
 

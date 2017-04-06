@@ -5,8 +5,8 @@ var router = express.Router();  //调用模块的Router方法
 router.get('/', function (req, res, next) {
     // req.session.user = null;
 /*    var cookie = req.cookies;
-    console.log('logout cookie: ');
-    console.dir(cookie);
+    //console.log('logout cookie: ');
+    //console.dir(cookie);
     for (var prop in cookie) {
         if (!cookie.hasOwnProperty(prop)) {
             continue;

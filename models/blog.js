@@ -9,11 +9,11 @@ function BlogSubmit(user) {
 //存储文本内容
 BlogSubmit.prototype.save = function (callback) {
     var self = this;
-    console.log(self.user);
+    // console.log(self.user);
     db.con(function (connect) {
         connect.query("INSERT INTO text(user,text,ctime) VALUES (?,?,?)", [self.user, self.text, self.time], function (err, result) {
             if (err) {
-                console.log("INSERT text user:" + self.user + ", text:" + self.text + ", ctime: " + self.time + " error, the err information is " + err);
+                // console.log("INSERT text user:" + self.user + ", text:" + self.text + ", ctime: " + self.time + " error, the err information is " + err);
                 return callback(err);
             }
             callback(null, result);
@@ -28,7 +28,7 @@ BlogSubmit.prototype.getAll = function (count, callback) {
         //第一次查询数据库还有多少数据
         connect.query("SELECT count(*) FROM text", null, function (err, result) {
             if (err) {
-                console.log("SELECT  * FROM text limit :" + count + ", 9 error, the err information is " + err);
+                // console.log("SELECT  * FROM text limit :" + count + ", 9 error, the err information is " + err);
                 return callback(err);
             }
             //console.log(result[0]['count(*)']);   //这个是查询出来的值
@@ -36,7 +36,7 @@ BlogSubmit.prototype.getAll = function (count, callback) {
             if (Number(count) < result[0]['count(*)']) {
                 connect.query("SELECT * FROM text limit ?,9", [Number(count)], function (err, result) {
                     if (err) {
-                        console.log("SELECT  * FROM blogtext limit :" + count + ", 9 error, the err information is " + err);
+                        // console.log("SELECT  * FROM blogtext limit :" + count + ", 9 error, the err information is " + err);
                         return callback(err);
                     }
                     result.offset = Number(count) + result.length;
@@ -65,7 +65,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
     for (var key in obj)
         if (new RegExp("(" + key + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (obj[key]) : (("00" + obj[key]).substr(("" + obj[key]).length)));
 
-    console.log(fmt);
+    // console.log(fmt);
     return fmt; //返回值是格式化好之后的时间
 }
 

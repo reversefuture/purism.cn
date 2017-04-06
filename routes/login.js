@@ -6,7 +6,7 @@ var crypto = require("crypto"); // 这个是加密用，nodejs本身提供
 
 router.get('/', function (req, res, next) {
 /*    console.log('login sess: ')
-    console.dir(req.session);*/
+    //console.dir(req.session);*/
     res.render('login');
 });
 
@@ -20,12 +20,12 @@ router.post('/', function (req, res, next) {
     newUser.get(function (err, user) {
         if (!user) {    //用户名不存在
             return res.send({errorName: res.locals.message.errorName});
-            console.log('login: no user');
+            //console.log('login: no user');
         }
         else if (user) { //如果第二个参数存在，说明用户名重复了，那么监测密码是否相同
             // user.password = md5.update(user.password, 'utf-8').digest('base64');
-            console.log('user.password: ' + user.password);
-            console.log('password: ' + password);
+            //console.log('user.password: ' + user.password);
+            //console.log('password: ' + password);
 
             if (user.password === password) {   //密码正确，登录成功?? why use encrypted password?
             // if (user.password === req.body.password) {   //密码正确，登录成功?? why use encrypted password?
@@ -37,7 +37,7 @@ router.post('/', function (req, res, next) {
             }
         }
         else if (err) {  //如果报错，返回报错信息
-            console.log(err);
+            //console.log(err);
             return res.send({
                 error: err
             });

@@ -57,7 +57,7 @@ $(document).ready(function () {
         $("#textarea").val("");
         successSubmit = new Date();
         $.post('/post', {text: text}, function (item) {
-            console.log(item);
+            // console.log(item);
             if (item.code == 403) {
                 location.href = item.data;
             }

@@ -8,7 +8,7 @@ function User(user) {       // 这是一个User类，传递的参数是一个对
 User.prototype.save = function (callback) {
     var self = this
     if (this.name.length == 0 || this.password.length == 0) {    //如果在没账号/密码的情况下就调用插入方法，则提示错误并返回
-        console.log("You can't save user information without NAME or PASSWORD!");
+        // console.log("You can't save user information without NAME or PASSWORD!");
         return callback("You can't save user information without NAME or PASSWORD!");
     }
     db.con(function (connect) {
@@ -19,7 +19,7 @@ User.prototype.save = function (callback) {
             // ①必须以数组形式依次排列；
             // ②必须是字符串形式（不能是number）
             if (err) {  //如果出错，那么错误信息作为回调函数的参数返回
-                console.log("INSERT name:" + self.name + ", password:" + self.password + " error, the err information is " + err);
+                // console.log("INSERT name:" + self.name + ", password:" + self.password + " error, the err information is " + err);
                 return callback(err);
             }
             callback(null, result); //如果正常执行，那么第一个参数为null（无错误），第二个参数为返回的结果
@@ -30,18 +30,18 @@ User.prototype.save = function (callback) {
 User.prototype.get = function (callback) {
     var self = this;
     if (this.name.length == 0) {    //如果在没账号/密码的情况下就调用插入方法，则提示错误并返回
-        console.log("You can't select user information without NAME!");
+        // console.log("You can't select user information without NAME!");
         return callback("You can't select user information without NAME!");
     }
     var selectResult;
     db.con(function (connect) {
         connect.query('SELECT * FROM user WHERE name = ?', [self.name], function (err, result) {
             if (err) {  //报错
-                console.log("select name:" + self.name + " error, the err information is " + err);
+                // console.log("select name:" + self.name + " error, the err information is " + err);
                 return callback(err);
             }
-            console.log('db result: ')
-            console.dir(result);
+            // console.log('db result: ')
+            // //console.dir(result);
             //注意，这里返回的是带账号和密码的，另外，理论上是有可能有多个元素的，但由于在注册时，用户名限制了重复，因此只会返回一个
             selectResult = result;  //这里的result是一个数组，只包含一个元素（或者是空）
             if (selectResult.length) {  //查询到的话，数组是有元素的（即length > 0）
