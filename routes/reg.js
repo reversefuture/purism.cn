@@ -21,17 +21,21 @@ router.post('/', function (req, res, next) {    //当路由捕捉到url为/reg�
         password: password  //这里的password是加密过的（存储在数据库里也是加密过后的形式）
     })
 
-    if (user) { //如果第二个参数存在，说明用户名重复了，返回提示
-        return res.send({
-            error: "Username already exists."
-        });
-    }
-    if (err) {  //如果报错，返回报错信息
-        console.log(err);
-        return res.send({
-            error: err
-        });
-    }
+
+    newUser.get(function (err,user) {
+        if (user) { //如果第二个参数存在，说明用户名重复了，返回提示
+            return res.send({
+                error: "Username already exists."
+            });
+        }
+        if (err) {  //如果报错，返回报错信息
+            console.log(err);
+            return res.send({
+                error: err
+            });
+        }
+    });
+
 //此时说明无重复无报错，可以将用户信息存入到数据库之中
     newUser.save(function (err, result) {
         if (err) {  //如果存入时报错
