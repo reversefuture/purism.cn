@@ -3,15 +3,11 @@ var router = express.Router();  //生成express的Router方法的一个实例
 
 //处理函数
 router.get('/', function (req, res, next) {  //捕获根url
-    //console.log('index sess: ');
-    //console.dir(req.session);
+    var user = null;
+    if (req.session.user)
+        user =  req.session.user;
     res.render('index', {
-        user: function () { //user将读取session的属性，然后给予不同的返回值
-            if (req.session.user)
-                return req.session.user;
-            else
-                return null;
-        }
+        user:user
     });
     //res.render方法渲染一个引擎模板，
     //第二个参数是一个对象，对象里的变量可以在引擎中使用，

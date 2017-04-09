@@ -20,9 +20,6 @@ router.post('/', function (req, res, next) {    //当路由捕捉到url为/reg�
         name: req.body.name,
         password: password  //这里的password是加密过的（存储在数据库里也是加密过后的形式）
     })
-/*    newUser.save(function (err, result) {
-        //do something
-    })*/
 
     if (user) { //如果第二个参数存在，说明用户名重复了，返回提示
         return res.send({
@@ -30,7 +27,7 @@ router.post('/', function (req, res, next) {    //当路由捕捉到url为/reg�
         });
     }
     if (err) {  //如果报错，返回报错信息
-        // console.log(err);
+        console.log(err);
         return res.send({
             error: err
         });
