@@ -3,6 +3,7 @@ var router = express.Router();  //生成express的Router方法的一个实例
 
 //处理函数
 router.get('/', function (req, res, next) {  //捕获根url
+    console.dir('token:' + req.cookies.token);
     var user = null;
     if (req.session.user)
         user =  req.session.user;

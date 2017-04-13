@@ -15,7 +15,6 @@ $(document).ready(function () {
             return;
         }
 
-
         if (new Date() - time < 3000)
             return
         time = new Date();
@@ -40,6 +39,9 @@ $(document).ready(function () {
                 }, 2000)
                 time = 0;
             } else if ("success" in data) {
+                console.dir(data);
+                console.dir(getCookie('token'));
+                return;
                 location.href = data.success;    //注册成功则重定向
             }
         })
