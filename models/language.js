@@ -6,21 +6,21 @@ internation.prototype.languagePacks = {
     zh_cn: {
         index: {
             title: "我的博客",
-            description: "这个是基于Nodejs作为后台，jade作为模板来，使用了Express作为框架",
+            description: "这个是基于Nodejs作为后台，swig作为模板来，使用了Express作为框架",
             login: "登录",
             regNow: "立即注册",
             submit: "提交微博",
             emptyInput: "清空"
         },
         layout: {
-            title: "MyBlog By qq20004604",
-            topTitle: "MyBlog",
+            title: "我的博客",
+            topTitle: "我的博客",
             indexButton: "首页",
             logout: "登出",
             login: "登入",
             reg: "注册",
             language: "切换语言",
-            foot: "作者：王冬　　　QQ:20004604"
+            foot: "作者：1 v 9的寂寞"
         },
         message: {
             reg_success: "注册成功！",
@@ -41,14 +41,14 @@ internation.prototype.languagePacks = {
             emptyInput: "Clear"
         },
         layout: {
-            title: "MyBlog By qq20004604",
-            topTitle: "MyBlog",
+            title: "My Blog",
+            topTitle: "My Blog",
             indexButton: "Index",
             logout: "Logout",
             login: "Login",
             reg: "Reg",
             language: "Language",
-            foot: "I'm WangDong, you can contact me with QQ:20004604"
+            foot: "Author: 1 v 9的寂寞"
         },
         message: {
             reg_success: "Reg Success！",

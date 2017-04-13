@@ -53,4 +53,26 @@ User.prototype.get = function (callback) {
     })
 }
 
+User.prototype.put = function (callback) {
+    var self =this;
+    if (this.name.length == 0) {    //如果在没账号/密码的情况下就调用插入方法，则提示错误并返回
+        return callback("You can't update user information without NAME!");
+    }
+    db.con(function (connect) {
+        // 数据库的表名为user，字段名为name和password
+
+        connect.query("update user set password='?' where name='?'", [self.password, self.name], function (err, result) {
+            // 上面的两个问号，表示第二个参数的self.name和self.password依次被替换到问号的位置；
+            // 需要注意的是：
+            // ①必须以数组形式依次排列；
+            // ②必须是字符串形式（不能是number）
+            if (err) {  //如果出错，那么错误信息作为回调函数的参数返回
+                // console.log("INSERT name:" + self.name + ", password:" + self.password + " error, the err information is " + err);
+                return callback(err);
+            }
+            callback(null, result); //如果正常执行，那么第一个参数为null（无错误），第二个参数为返回的结果
+        })
+    })
+}
+
 module.exports = User;

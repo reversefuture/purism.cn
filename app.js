@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var swig = require('swig');
 var helmet = require('helmet');
+var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -15,6 +16,8 @@ var login = require('./routes/login');
 var lan = require('./routes/language');
 var logout = require('./routes/logout');
 var postBlog = require('./routes/post');
+var changePwd = require('./routes/changePwd');
+var authentiate = require('./routes/authenticate');
 
 var app = express();
 
@@ -29,8 +32,39 @@ function testUser(req, res) {
     return res.locals.testUser = {name: 'eirc', age: 22};
 }*/
 
-// app.use(helmet());  //safe http header
-app.disable('x-powered-by');    //禁用 X-Powered-By 头,helmet已经禁用
+// route middleware to verify a token
+/*app.use(function(req, res, next) {
+    // check header or url parameters or post parameters for token
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+    // decode token
+    if (token) {
+
+        // verifies secret and checks exp
+        jwt.verify(token, app.get('superSecret'), function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                // if everything is good, save to request for use in other routes
+                req.decoded = decoded;
+                next();
+            }
+        });
+
+    } else {
+
+        // if there is no token
+        // return an error
+        return res.status(403).send({
+            success: false,
+            message: 'No token provided.'
+        });
+
+    }
+});*/
+
+app.use(helmet());  //safe http header
+// app.disable('x-powered-by');    //禁用 X-Powered-By 头,helmet已经禁用
 
 app.use(session({
     secret: 'recommend 128 bytes random string',
@@ -92,6 +126,8 @@ app.use('/language', lan);  //切换语言的
 app.use('/logout', logout);  //登出
 app.use('/post', postBlog);  //提交博客
 app.use('/loadblog', users);  //用户主页，users来处理
+app.use('/changePwd', changePwd);
+app.use('/authentiate', authentiate);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
