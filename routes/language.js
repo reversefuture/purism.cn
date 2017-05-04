@@ -1,15 +1,14 @@
-var express = require('express'); //调用express
-var router = express.Router();  //生成express的Router方法的一个实例
+var express = require('express');
+var router = express.Router();
 
-//处理函数
 router.get('/', function (req, res, next) {  //捕获根url
-    // var sess = req.session;
+
     if (!('language' in req.session) || req.session.language === 'zh_cn')
-        req.session.language = 'eng';   //更改属性
+        req.session.language = 'eng';
     else
         req.session.language = 'zh_cn';
 
-    res.redirect('/login');  //重定向
+    res.redirect(req.headers.referer);
 });
 
 module.exports = router;

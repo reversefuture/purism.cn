@@ -55,7 +55,7 @@ $(document).ready(function () {
         var obj = {
             name: name,
             password: oldPwd,
-            newPwd: newPwd
+            newPassword: newPwd
         };
         console.dir(obj);
 
@@ -65,19 +65,25 @@ $(document).ready(function () {
         }
         //发起请求前，更新提交时间，
         time = new Date();
-        //发起请求，回调内容是一个对象，修改成功会有success，失败会有error属性
-        $.post("/changePwd", obj, function (data) {
-            if ("error" in data) {
-                $("#error-alert").removeClass("displayNONE")
-                $("#error-alert").text(data.error);
-                $("#error-alert").parent().parent().addClass("error");
-                setTimeout(function () {
-                    $("#error-alert").addClass("displayNONE");
-                    $("#error-alert").parent().parent().removeClass("error");
-                }, 2000)
-                time = 0;       //修改失败，清空time计时，允许再次提交
-            } else if ("success" in data) {
-                location.href = data.success;    //注册成功则重定向
+
+        $.ajax({
+            url: "/changePWD",
+            type: 'PUT',
+            data: obj,
+            dataType: 'jsonp',
+            success: function(data) {
+                if ("error" in data) {
+                    $("#error-alert").removeClass("displayNONE")
+                    $("#error-alert").text(data.error);
+                    $("#error-alert").parent().parent().addClass("error");
+                    setTimeout(function () {
+                        $("#error-alert").addClass("displayNONE");
+                        $("#error-alert").parent().parent().removeClass("error");
+                    }, 2000)
+                    time = 0;       //修改失败，清空time计时，允许再次提交
+                } else if ("success" in data) {
+                    window.location.href = data.success;    //注册成功则重定向
+                }
             }
         })
     })

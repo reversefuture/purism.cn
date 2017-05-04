@@ -1,72 +1,109 @@
-var db = require('./db');
+const db = require('./db');
+const Base = require('./base');
 
-function BlogSubmit(user) {
-    this.user = user.name;
-    this.text = user.text;
-    this.time = new Date().Format("yyyy-MM-dd HH:mm:ss");
-}
-
-//存储文本内容
-BlogSubmit.prototype.save = function (callback) {
-    var self = this;
-    // console.log(self.user);
-    db.con(function (connect) {
-        connect.query("INSERT INTO text(user,text,ctime) VALUES (?,?,?)", [self.user, self.text, self.time], function (err, result) {
-            if (err) {
-                // console.log("INSERT text user:" + self.user + ", text:" + self.text + ", ctime: " + self.time + " error, the err information is " + err);
-                return callback(err);
-            }
-            callback(null, result);
-        })
-    })
-}
-
-//读取文本内容（读取所有的），从第count条偏移量开始取9条
-BlogSubmit.prototype.getAll = function (count, callback) {
-    var self = this;
-    db.con(function (connect) {
-        //第一次查询数据库还有多少数据
-        connect.query("SELECT count(*) FROM text", null, function (err, result) {
-            if (err) {
-                // console.log("SELECT  * FROM text limit :" + count + ", 9 error, the err information is " + err);
-                return callback(err);
-            }
-            //console.log(result[0]['count(*)']);   //这个是查询出来的值
-            //只有当请求数据的编号（已经查询到多少个），小于最大数据量的时候，才会从数据库内读取数据
-            if (Number(count) < result[0]['count(*)']) {
-                connect.query("SELECT * FROM text limit ?,9", [Number(count)], function (err, result) {
-                    if (err) {
-                        // console.log("SELECT  * FROM blogtext limit :" + count + ", 9 error, the err information is " + err);
-                        return callback(err);
-                    }
-                    result.offset = Number(count) + result.length;
-                    callback(null, result);
+class Blog extends Base{
+    constructor(user, text){
+        super();
+            this.user = user || '';
+            this.text = text || '';
+            this.ctime = (new Date()).toISOString();
+    }
+    save(){
+        return new Promise((resolve, reject) => {
+            db.con((connect) => {
+                connect.query("INSERT INTO text(user,text,ctime) VALUES (?,?,?)", [this.user, this.text, this.ctime] ,(err, result)=>{
+                        if(err){
+                            reject(err);
+                        }
+                        resolve(result);
                 })
-            } else {
-                callback(null, null);
-            }
+            })
         })
-    })
+    }
+
+    findAll(count=0){
+        return new Promise((resolve, reject) => {
+            db.con(connect => {
+                connect.query('SELECT COUNT(*) FROM text', null, (err,result) => {
+                    if(err){
+                        reject(err);
+                    }
+                    let selectResult =[];
+                    result = JSON.parse(JSON.stringify(result)); //convert to JS object
+                    if(Number(count) < result[0]['COUNT(*)']){
+                        db.con(connect => {
+                            connect.query('SELECT * from text limit ?,9', [Number(count)], (err, result) => {
+                                if (err){
+                                    reject(err);
+                                }
+                                result.offset = Number(count) + result.length;
+                                resolve(result);
+                            })
+                        })
+                    }else{
+                        resolve(null, null);
+                    }
+                })
+            })
+        })
+    }
+    findById(id){
+        return new Promise((resolve, reject) => {
+            db.con(connect => {
+                        connect.query('SELECT * FROM text WHERE id=?', [id], (err,result) => {
+                            if(err){
+                                reject(err);
+                            }
+                            resolve(result);
+                        })
+                })
+            })
+    }
+
+    findByName(name){
+        return new Promise((resolve, reject) => {
+            db.con(connect => {
+                connect.query('SELECT * FROM user WHERE name=?', [name], (err,result) => {
+                    if(err){
+                        reject('No user with this name!');
+                    }else{
+                        connect.query('SELECT * FROM text WHERE user=?', [name], (err,result) => {
+                            if(err){
+                                reject(err);
+                            }
+                            resolve(result);
+                        })
+                    }
+                })
+            })
+        })
+    }
+
+    update(id){
+        return new Promise((resolve, reject) => {
+            db.con(connect => {
+                connect.query("UPDATE text SET text=? WHERE user=? AND id=?", [this.text, this.user, id], (err, result) => {
+                    if (err){
+                        reject(err);
+                    }
+                    resolve(result);
+                });
+            })
+        })
+    }
+
+    delete(id){
+        return new Promise((resolve, reject) => {
+            db.con(connect => {
+                connect.query("DELETE FROM text WHERE user=? AND id=?", [this.user, id], (err, result) => {
+                    if (err){
+                        reject(err);
+                    }
+                    resolve(result);
+                });
+            })
+        })
+    }
 }
 
-//给原生的Date添加一个方法，传递的参数是格式
-Date.prototype.Format = function (fmt) { //author: meizz
-    var obj = {
-        "M+": this.getMonth() + 1, //月份
-        "d+": this.getDate(), //日
-        "H+": this.getHours(), //小时
-        "m+": this.getMinutes(), //分
-        "s+": this.getSeconds(), //秒
-        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-        "S": this.getMilliseconds() //毫秒
-    };
-    if (/(y+)/.test(fmt))
-        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var key in obj)
-        if (new RegExp("(" + key + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (obj[key]) : (("00" + obj[key]).substr(("" + obj[key]).length)));
-
-    // console.log(fmt);
-    return fmt; //返回值是格式化好之后的时间
-}
-
-module.exports = BlogSubmit;
+module.exports = Blog;

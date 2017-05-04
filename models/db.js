@@ -1,12 +1,12 @@
-var mysql = require("mysql");   //调用nodejs和mysql交互的模块；
-var pool = mysql.createPool({   //创建连接池
+const mysql = require("mysql");   //调用nodejs和mysql交互的模块；
+let pool = mysql.createPool({   //创建连接池
     host: '127.0.0.1',  //表示本地的数据库
     user: 'root',       //账号
     password: '', //密码
     port: '3306',       //默认端口
     database: 'blog'    //库名
 })
-var db = {};
+let db = {};
 db.con = function (callback) {   //callback是回调函数，连接建立后的connection作为其参数
     pool.getConnection(function (err, connection) { //创建一个链接
         if (err) {      //对异常进行处理
@@ -17,4 +17,5 @@ db.con = function (callback) {   //callback是回调函数，连接建立后的c
         connection.release();   //释放连接
     })
 }
+
 module.exports = db;

@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     //清空输入框
     $("#clearBlog").click(function () {
         $("#textarea").val("");
@@ -56,8 +57,8 @@ $(document).ready(function () {
         //先清除输入框再提交
         $("#textarea").val("");
         successSubmit = new Date();
-        $.post('/post', {text: text}, function (item) {
-            // console.log(item);
+        $.post('/blog', {text: text}, function (item) {
+            console.log(item);
             if (item.code == 403) {
                 location.href = item.data;
             }
@@ -94,7 +95,11 @@ $(document).ready(function () {
                     $("#scrollToFoot").text("加载失败");
                 }
             }, 10000);
-            $.get('/loadblog/' + lastLoadCount, function (obj) {    //obj:{code:200,data{},offset:7}
+            var blogsURL = window.location.href + 'blogs/';
+            blogsURL = updateQueryString(blogsURL, 'count', lastLoadCount);
+            console.log(blogsURL)
+
+            $.get(blogsURL, function (obj) {    //obj:{code:200,data{},offset:7}
                 //这里假设item的格式：
                 if (obj.code === 500) {
                     $("#scrollToFoot").text("加载失败");
@@ -114,63 +119,15 @@ $(document).ready(function () {
         }
     }
 
+if(window.location.href.search(/3000[\/]?$/i)){
     //加载完毕时，加载一次内容
-    // loadMoreContent();
+    loadMoreContent();
     //向下滚动时加载内容
     loadingBlog = setInterval(function () {
         if ($(document).height() - $(window).scrollTop() - $(window).height() < 200) {
-            // loadMoreContent();
+            loadMoreContent();
         }
     }, 100);
-
-    console.dir(getCookie('token'));
+}
 
 });
-
-function getCookie(c_name)
-{
-    if (document.cookie.length>0)
-    {
-        c_start=document.cookie.indexOf(c_name + "=")
-        if (c_start!=-1)
-        {
-            c_start=c_start + c_name.length+1
-            c_end=document.cookie.indexOf(";",c_start)
-            if (c_end==-1) c_end=document.cookie.length
-            return unescape(document.cookie.substring(c_start,c_end))
-        }
-    }
-    return ""
-}
-
-function setCookie(c_name,value,expiredays)
-{
-    var exdate=new Date()
-    exdate.setDate(exdate.getDate()+expiredays)
-    document.cookie=c_name+ "=" +escape(value)+
-        ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
-}
-
-function checkCookie()
-{
-    username=getCookie('username')
-    if (username!=null && username!="")
-    {alert('Welcome again '+username+'!')}
-    else
-    {
-        username=prompt('Please enter your name:',"")
-        if (username!=null && username!="")
-        {
-            setCookie('username',username,365)
-        }
-    }
-}
-//删除cookies
-function delCookie(name)
-{
-    var exp = new Date();
-    exp.setTime(exp.getTime() - 1);
-    var cval=getCookie(name);
-    if(cval!=null)
-        document.cookie= name + "="+cval+";expires="+exp.toGMTString();
-}

@@ -1,9 +1,13 @@
 $(document).ready(function () {
     var time = 0;
+    var token = '';
+    var ramdomNum = getRandomArbitrary(1000000, 9999999);
     $("#submit").click(function () {
+
         var user = {
             name: $("#username").val(),
-            password: $("#password").val()
+            password: $("#password").val(),
+            token_secret: ramdomNum
         }
 
         //禁止用户名、密码为空
@@ -18,9 +22,10 @@ $(document).ready(function () {
         if (new Date() - time < 3000)
             return
         time = new Date();
+
         //发起ajax请求
         $.post("login", user, function (data) {
-            if ("errorName" in data) {
+            if (data.errorType === "errorName") {
                 $("#name-alert").removeClass("displayNONE")
                 $("#name-alert").text(data.errorName);
                 $("#name-alert").parent().parent().addClass("error");
@@ -29,7 +34,7 @@ $(document).ready(function () {
                     $("#name-alert").parent().parent().removeClass("error");
                 }, 2000)
                 time = 0;
-            } else if ("errorPW" in data) {    //
+            } else if (data.errorType === "errorPw") {
                 $("#pw-alert").removeClass("displayNONE")
                 $("#pw-alert").text(data.errorPW);
                 $("#pw-alert").parent().parent().addClass("error");
@@ -38,12 +43,25 @@ $(document).ready(function () {
                     $("#pw-alert").parent().parent().removeClass("error");
                 }, 2000)
                 time = 0;
-            } else if ("success" in data) {
+            } else if (data.success) {
                 console.dir(data);
-                console.dir(getCookie('token'));
-                return;
-                location.href = data.success;    //注册成功则重定向
+                token = data.token;
+                window.location.href = data.location;    //注册成功则重定向
             }
         })
     })
-})
+});
+
+/**
+ * Returns a random number between min (inclusive) and max (exclusive)
+ */
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+/**
+ * Returns a random number between min (inclusive) and max (exclusive)
+ */
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}

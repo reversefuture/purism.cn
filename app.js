@@ -1,42 +1,54 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-var swig = require('swig');
-var helmet = require('helmet');
-var config = require('./config');
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const swig = require('swig');
+const helmet = require('helmet');
+const config = require('./config');
+const session = require('express-session');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var reg = require('./routes/reg');
-var login = require('./routes/login');
-var lan = require('./routes/language');
-var logout = require('./routes/logout');
-var postBlog = require('./routes/post');
-var changePwd = require('./routes/changePwd');
-// var authentiate = require('./middlewares/authenticate');
-var language = require('./models/language');    //多语言
-var verifyToken = require('./middlewares/verifyToken');
-var app = express();
+const app = express();
+const auth = require('./middlewares/authenticate')
+const login = require('./routes/login')
+const index = require('./routes/index')
+const language = require('./middlewares/language')
+const lan = require('./routes/language')
+const reg = require('./routes/reg')
+const blogs = require('./routes/blogs')
+const blog = require('./routes/blog')
+const users = require('./routes/users')
+const user = require('./routes/user')
+const changePwd = require('./routes/changePwd')
+const logout = require('./routes/logout')
 
-/*// middle ware test
-app.use(function( req, res, next) {
-    res.locals.testUser = testUser(req, res);
-    //console.log('!!!!!! middle ware test');
-    next();
-});
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
+app.engine('html', swig.renderFile);
 
-function testUser(req, res) {
-    return res.locals.testUser = {name: 'eirc', age: 22};
-}*/
-
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+app.settings.secret = "This website rocks!"
 app.use(helmet());  //safe http header
-// app.disable('x-powered-by');    //禁用 X-Powered-By 头,helmet已经禁用
 
-app.settings.secret = config.secret;
+app.all('/*', function(req, res, next) {
+    // CORS headers
+    res.header("Access-Control-Allow-Origin", "*"); // restrict it to the required domain
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    // Set custom headers for CORS
+    res.header('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
+    if (req.method == 'OPTIONS') {
+        res.status(200).end();
+    } else {
+        next();
+    }
+});
 
 app.use(session({
     secret: 'recommend 128 bytes random string',
@@ -51,7 +63,6 @@ app.use(session({
 var internation = new language();
 internation.set(app);
 
-//路由的处理
 app.use('/login', checkNotLogin);
 app.use('/reg', checkNotLogin);
 //必须在已登录情况下才能访问
@@ -73,52 +84,38 @@ function checkLogin(req, res, next) {
     next();
 }
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'jade');
-swig = require('swig'),
-app.set('view engine', 'html');
-app.engine('html', swig.renderFile);
+app.post('/authenticate', auth.authenticate)
+app.use('/login', login)
+app.use('/', index)
+app.use('/language', lan)
+app.use('/reg', reg);
+app.use('/blogs', blogs);
+app.use('/blog', blog);
+app.use('/users', users)
+app.use('/user', user)
+app.use('/changePwd', changePwd)
+app.use('/logout', logout);
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// app.all('/api/v1/*', [require('./middlewares/validateRequest')]);
 
-app.use('/', index);
-// app.use('/authentiate', authentiate);
-app.use('/login', login);  //登录的，login来处理
-// route middleware to verify a token
-verifyToken(app);
-
-app.use('/users', users);
-app.use('/reg', reg);    //注册的，reg.js来处理
-app.use('/language', lan);  //切换语言的
-app.use('/logout', logout);  //登出
-app.use('/post', postBlog);  //提交博客
-app.use('/loadblog', users);  //用户主页，users来处理
-app.use('/changePwd', changePwd);
-
+app.use('/api', require('./routes/api'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;

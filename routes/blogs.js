@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const user = require('../middlewares/user')
+const blog = require('../middlewares/blog')
 const auth = require('../middlewares/authenticate')
 
-router.get('/', user.getAll);
+router.get('/', blog.getAll);
 
 module.exports = router;
